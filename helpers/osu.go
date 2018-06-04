@@ -3,38 +3,31 @@ package helpers
 import (
 	"crypto/md5"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 )
 
-func DownloadBeatmapbyName(BeatmapName string) string {
+func DownloadBeatmapbyName(BeatmapName string) (string, error) {
 	uri := url.URL{Host: "osu.ppy.sh", Path: fmt.Sprintf("osu/%s", BeatmapName)}
-	h, err := http.Get(uri.String())
+	h, err := http.Get("http:" + uri.String())
 	if err != nil {
-		fmt.Println(err)
-		return ""
+		return "", err
 	}
 	defer h.Body.Close()
 
-	md5sum := md5.New()
-	if _, err := io.Copy(md5sum, h.Body); err != nil {
-		fmt.Println(err)
-		return ""
-	}
-
-	f, err := os.OpenFile(fmt.Sprintf("data/map/%x", md5sum.Sum(nil)), os.O_RDWR, 0644)
+	b, err := ioutil.ReadAll(h.Body)
 	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	defer f.Close()
-
-	if _, err := io.Copy(f, h.Body); err != nil {
-		fmt.Println(err)
-		return ""
+		return "", err
 	}
 
-	return fmt.Sprintf("data/map/%s", md5sum.Sum(nil))
+	md5sum := md5.New()
+	md5sum.Write(b)
+
+	fhash := fmt.Sprintf("data/map/%x.osu", md5sum.Sum(nil))
+	err = ioutil.WriteFile(fhash, b, 0644)
+	if err != nil {
+		return "", err
+	}
+	return fhash, nil
 }
