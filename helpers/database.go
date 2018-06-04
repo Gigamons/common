@@ -3,8 +3,10 @@ package helpers
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/Gigamons/common/consts"
+	"github.com/Gigamons/common/logger"
 
 	// MySQL Driver
 	_ "github.com/go-sql-driver/mysql"
@@ -20,4 +22,15 @@ func Connect(c consts.MySQLConf) {
 		panic(err)
 	}
 	DB = db
+	go StartAntiTimeout()
+}
+
+func StartAntiTimeout() {
+	for {
+		err := DB.Ping()
+		if err != nil {
+			logger.Error("Failed to ping, is the Database dead ?")
+		}
+		time.Sleep(time.Second * 10)
+	}
 }
