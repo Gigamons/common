@@ -295,46 +295,47 @@ func MarshalBinary(value interface{}) []byte {
 		switch t {
 		case reflect.Int:
 			buf.Write(Int(int(vp.Int())))
-			break
+
 		case reflect.Uint:
 			buf.Write(UInt(uint(vp.Uint())))
-			break
+
 		case reflect.Int8:
 			buf.Write(Int8(int8(vp.Int())))
-			break
+
 		case reflect.Uint8:
 			buf.Write(UInt8(uint8(vp.Uint())))
-			break
+
 		case reflect.Int16:
 			buf.Write(Int16(int16(vp.Int())))
-			break
+
 		case reflect.Uint16:
 			buf.Write(UInt16(uint16(vp.Uint())))
-			break
+
 		case reflect.Int32:
 			buf.Write(Int32(int32(vp.Int())))
-			break
+
 		case reflect.Uint32:
 			buf.Write(UInt32(uint32(vp.Uint())))
-			break
+
 		case reflect.Int64:
 			buf.Write(Int64(int64(vp.Int())))
-			break
+
 		case reflect.Uint64:
 			buf.Write(UInt64(uint64(vp.Uint())))
-			break
+
 		case reflect.String:
 			buf.Write(BString(vp.String()))
-			break
+
 		case reflect.Float64:
 			buf.Write(Float64(vp.Float()))
-			break
 		case reflect.Float32:
 			buf.Write(Float32(float32(vp.Float())))
-			break
+
 		case reflect.Bool:
 			buf.Write(Bool(bool(vp.Bool())))
-			break
+
+		default:
+			buf.Write(vp.Bytes())
 		}
 	}
 	return buf.Bytes()
@@ -353,98 +354,98 @@ func UnmarshalBinary(value io.Reader, s interface{}) {
 				fmt.Println(err)
 			}
 			vp.SetInt(int64(b))
-			break
+
 		case reflect.Uint:
 			b, err := RUInt(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetUint(uint64(b))
-			break
+
 		case reflect.Int8:
 			b, err := RInt8(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetInt(int64(b))
-			break
+
 		case reflect.Uint8:
 			b, err := RUInt8(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetUint(uint64(b))
-			break
+
 		case reflect.Int16:
 			b, err := RInt16(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetInt(int64(b))
-			break
+
 		case reflect.Uint16:
 			b, err := RUInt16(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetUint(uint64(b))
-			break
+
 		case reflect.Int32:
 			b, err := RInt32(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetInt(int64(b))
-			break
+
 		case reflect.Uint32:
 			b, err := RUInt32(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetUint(uint64(b))
-			break
+
 		case reflect.Int64:
 			b, err := RInt64(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetInt(int64(b))
-			break
+
 		case reflect.Uint64:
 			b, err := RUInt64(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetUint(uint64(b))
-			break
+
 		case reflect.String:
 			b, err := RBString(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetString(b)
-			break
+
 		case reflect.Float64:
 			b, err := RFloat64(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetFloat(b)
-			break
+
 		case reflect.Float32:
 			b, err := RFloat32(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetFloat(float64(b))
-			break
+
 		case reflect.Bool:
 			b, err := RBool(value)
 			if err != nil {
 				fmt.Println(err)
 			}
 			vp.SetBool(b)
-			break
+
 		}
 	}
 }
