@@ -40,7 +40,7 @@ type Leaderboard struct {
 	Count50     int64
 	CountMiss   int64
 	Playcount   int64
-	PeppyPoints int16
+	PeppyPoints float64
 	Position    int32
 }
 
