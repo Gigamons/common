@@ -2,7 +2,6 @@ package consts
 
 // All Mods
 const (
-const (
 	ModsNF   = 1 << 0
 	ModsEZ   = 1 << 1
 	ModsTD   = 1 << 2
