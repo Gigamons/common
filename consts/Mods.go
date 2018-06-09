@@ -2,7 +2,7 @@ package consts
 
 // All Mods
 const (
-	ModsN    = 0
+const (
 	ModsNF   = 1 << 0
 	ModsEZ   = 1 << 1
 	ModsTD   = 1 << 2
@@ -23,14 +23,15 @@ const (
 	ModsK6   = 1 << 17
 	ModsK7   = 1 << 18
 	ModsK8   = 1 << 19
-	ModsK    = 1015808
 	ModsFI   = 1 << 20
 	ModsRND  = 1 << 21
 	ModsLM   = 1 << 22
 	ModsTP   = 1 << 23
 	ModsK9   = 1 << 24
-	ModsCOOP = 1 << 25
+	ModsK10  = 1 << 25
 	ModsK1   = 1 << 26
 	ModsK3   = 1 << 27
 	ModsK2   = 1 << 28
+	ModsLast = 1 << 29
+	ModsK    = ModsK1 | ModsK2 | ModsK3 | ModsK4 | ModsK5 | ModsK6 | ModsK7 | ModsK8 | ModsK9 | ModsK10
 )
