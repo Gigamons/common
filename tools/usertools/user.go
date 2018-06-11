@@ -88,7 +88,10 @@ func getUserStatus(userid int) consts.Status {
 	return u
 }
 
-func GetLeaderboard(u consts.User, playMode int8) consts.Leaderboard {
+func GetLeaderboard(u *consts.User, playMode int8) *consts.Leaderboard {
+	if u == nil {
+		return nil
+	}
 	var db = helpers.DB
 	var m string
 	if u.Relax {
@@ -113,10 +116,13 @@ func GetLeaderboard(u consts.User, playMode int8) consts.Leaderboard {
 		}
 	}
 
-	return lb
+	return &lb
 }
 
-func GetLeaderboardPosition(u consts.User, playMode int8) int32 {
+func GetLeaderboardPosition(u *consts.User, playMode int8) int32 {
+	if u == nil {
+		return -1
+	}
 	var userids []int
 	db := helpers.DB
 	var m string
