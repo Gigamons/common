@@ -32,6 +32,7 @@ func startAntiTimeout(c *consts.MySQLConf) {
 		if err != nil {
 			logger.Errorln("Failed to ping, is the Database dead ?")
 			Connect(c)
+			break
 		}
 		time.Sleep(time.Second * 10)
 	}
