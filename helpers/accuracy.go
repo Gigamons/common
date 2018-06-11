@@ -45,11 +45,12 @@ func CalculateAccuracy(count300 int64, count100 int64, count50 int64, countMiss 
 	}
 }
 
+// ToHumanAcc is converting the Accuracy to a human readable Number, (Way smaller then E.G 0.895023981 // should be 89.50 % acc)
 func ToHumanAcc(acc float64) float64 {
-	a := fmt.Sprintf("%.2f", acc)
+	a := fmt.Sprintf("%.2f", acc*100)
 	r, err := strconv.ParseFloat(a, 64)
 	if err != nil {
-		return acc
+		return acc * 100
 	}
-	return r * 100
+	return r
 }

@@ -6,11 +6,13 @@ import (
 	"github.com/fatih/color"
 )
 
-// Info logs information.
-func Info(message string, v ...interface{}) {
-	if len(v) < 1 {
-		log.Println(prefix(color.CyanString("I")), message)
-	} else {
-		log.Printf(prefix(color.CyanString("I"))+message+"\n", v...)
-	}
+// Infof formats and sends an Info to std out or file to log.
+func Infof(format string, v ...interface{}) {
+	log.Printf(prefix(color.CyanString("I"))+" "+format, v...)
+}
+
+// Infoln sends an Info to std out or file to log.
+func Infoln(v ...interface{}) {
+	v = append(ToInterface(prefix(color.CyanString("I"))), v...)
+	log.Println(v...)
 }

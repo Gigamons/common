@@ -6,6 +6,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// MySQLConf is the MySQL Configuration
+type MySQLConf struct {
+	Hostname string
+	Port     int
+	Username string
+	Password string
+	Database string
+}
+
+// REDISConf used for Redis(later)
+type REDISConf struct {
+	Host     string
+	Port     int16
+	Password string
+}
+
 // User is a User Object
 type User struct {
 	ID             int32
@@ -32,6 +48,7 @@ type Status struct {
 	Verified       bool
 }
 
+// Leaderboard is ofc our Leaderboard! where our "PeppyPoints" is located at.
 type Leaderboard struct {
 	RankedScore int64
 	TotalScore  int64
@@ -42,6 +59,21 @@ type Leaderboard struct {
 	Playcount   int64
 	PeppyPoints float64
 	Position    int32
+}
+
+// GeoIP Is to get where the User is located. E.G ("Germany")
+type GeoIP struct {
+	City          string `json:"city"`
+	Continent     string `json:"continent"`
+	ContinentFull string `json:"continent_full"`
+	Country       string `json:"country"`
+	CountryFull   string `json:"country_full"`
+	IP            string `json:"ip"`
+	LocRaw        string `json:"loc"`
+	Location      struct {
+		Lon float64
+		Lat float64
+	}
 }
 
 // CheckPassword if valid.

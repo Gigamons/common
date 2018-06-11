@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"io"
 	"reflect"
 
+	"github.com/Gigamons/common/logger"
 	"github.com/bnch/uleb128"
 )
 
@@ -77,7 +77,7 @@ func ReadBeatmapList(value io.Reader) ([]int32, []string, error) {
 
 	count, err = RInt32(value)
 	if err != nil {
-		fmt.Println(err)
+		logger.Errorln(err)
 		return nil, nil, err
 	}
 
@@ -85,14 +85,14 @@ func ReadBeatmapList(value io.Reader) ([]int32, []string, error) {
 	for i := 0; i < int(count); i++ {
 		beatmapFiles[i], err = RBString(value)
 		if err != nil {
-			fmt.Println(err)
+			logger.Errorln(err)
 			return nil, nil, err
 		}
 	}
 
 	count, err = RInt32(value)
 	if err != nil {
-		fmt.Println(err)
+		logger.Errorln(err)
 		return nil, nil, err
 	}
 
@@ -100,7 +100,7 @@ func ReadBeatmapList(value io.Reader) ([]int32, []string, error) {
 	for i := 0; i < int(count); i++ {
 		beatmapIDs[i], err = RInt32(value)
 		if err != nil {
-			fmt.Println(err)
+			logger.Errorln(err)
 			return nil, nil, err
 		}
 	}
@@ -270,9 +270,8 @@ func Bool(value bool) []byte {
 	binary.Write(b, binary.LittleEndian, int8(func() int8 {
 		if value {
 			return int8(1)
-		} else {
-			return int8(0)
 		}
+		return int8(0)
 	}()))
 	return b.Bytes()
 }
@@ -351,98 +350,98 @@ func UnmarshalBinary(value io.Reader, s interface{}) {
 		case reflect.Int:
 			b, err := RInt(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetInt(int64(b))
 
 		case reflect.Uint:
 			b, err := RUInt(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetUint(uint64(b))
 
 		case reflect.Int8:
 			b, err := RInt8(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetInt(int64(b))
 
 		case reflect.Uint8:
 			b, err := RUInt8(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetUint(uint64(b))
 
 		case reflect.Int16:
 			b, err := RInt16(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetInt(int64(b))
 
 		case reflect.Uint16:
 			b, err := RUInt16(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetUint(uint64(b))
 
 		case reflect.Int32:
 			b, err := RInt32(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetInt(int64(b))
 
 		case reflect.Uint32:
 			b, err := RUInt32(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetUint(uint64(b))
 
 		case reflect.Int64:
 			b, err := RInt64(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetInt(int64(b))
 
 		case reflect.Uint64:
 			b, err := RUInt64(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetUint(uint64(b))
 
 		case reflect.String:
 			b, err := RBString(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetString(b)
 
 		case reflect.Float64:
 			b, err := RFloat64(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetFloat(b)
 
 		case reflect.Float32:
 			b, err := RFloat32(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetFloat(float64(b))
 
 		case reflect.Bool:
 			b, err := RBool(value)
 			if err != nil {
-				fmt.Println(err)
+				logger.Errorln(err)
 			}
 			vp.SetBool(b)
 
