@@ -1,0 +1,9 @@
+
+language: go
+go:
+  - 1.10.x
+
+script:
+  - go test -v ./helpers
+  - go test -v ./logger
+  - go test -v ./tools/usertools

@@ -14,15 +14,6 @@ func CalculateAccuracy(count300 int64, count100 int64, count50 int64, countMiss 
 	if count300 == 0 {
 		count300 = 1
 	}
-	if count100 == 0 {
-		count100 = 1
-	}
-	if count50 == 0 {
-		count50 = 1
-	}
-	if countMiss == 0 {
-		countMiss = 1
-	}
 	switch playMode {
 	case consts.STD:
 		thp = count50*50 + count100*100 + count300*300
