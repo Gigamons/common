@@ -4,22 +4,22 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Gigamons/common/logger"
+
 	"github.com/Gigamons/common/consts"
 	"github.com/pquerna/ffjson/ffjson"
 )
 
-var jsondecoder = ffjson.NewDecoder()
-
 // We're going to use http://ip.zxq.co/, because why not ?
-
 // GetIPInfo is gonna get the IP Information where the User is located at.
-func GetIPInfo() *consts.GeoIP {
+func GetIPInfo(ip string) *consts.GeoIP {
 	GeoIP := consts.GeoIP{}
-	f, err := Download("http://ip.zxq.co/")
+	f, err := Download("http://ip.zxq.co/" + ip)
 	if err != nil {
+		logger.Errorln(err)
 		return nil
 	}
-	jsondecoder.DecodeFast(f, &GeoIP)
+	ffjson.Unmarshal(f, &GeoIP)
 
 	Location := strings.Split(GeoIP.LocRaw, ",")
 	if len(Location) > 1 {
