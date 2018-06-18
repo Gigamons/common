@@ -24,14 +24,16 @@ type REDISConf struct {
 
 // User is a User Object
 type User struct {
-	ID             int32
-	UserName       string
-	UserNameSafe   string
-	EMail          string
-	BCryptPassword string
-	Privileges     int32
-	Status         Status
-	Relax          bool
+	ID                    int32
+	UserName              string
+	UserNameSafe          string
+	EMail                 string
+	BCryptPassword        string
+	Privileges            int32
+	Status                Status
+	Relax                 bool
+	Achievements          int32
+	AchievementsDisplayed int32
 }
 
 // Status status of current User
@@ -50,6 +52,7 @@ type Status struct {
 
 // Leaderboard is ofc our Leaderboard! where our "PeppyPoints" is located at.
 type Leaderboard struct {
+	UserID      uint32
 	RankedScore int64
 	TotalScore  int64
 	Count300    int64

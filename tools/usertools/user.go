@@ -41,13 +41,13 @@ func GetUser(userid int) *consts.User {
 	db := helpers.DB
 	u := consts.User{}
 
-	rows, err := db.Query("SELECT id, username, username_safe, email, password, privileges FROM users WHERE id = ?", userid)
+	rows, err := db.Query("SELECT id, username, username_safe, email, password, privileges, achievements, achievements_displayed FROM users WHERE id = ?", userid)
 	defer rows.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 	for rows.Next() {
-		err := rows.Scan(&u.ID, &u.UserName, &u.UserNameSafe, &u.EMail, &u.BCryptPassword, &u.Privileges)
+		err := rows.Scan(&u.ID, &u.UserName, &u.UserNameSafe, &u.EMail, &u.BCryptPassword, &u.Privileges, &u.Achievements, &u.AchievementsDisplayed)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -115,6 +115,9 @@ func GetLeaderboard(u *consts.User, playMode int8) *consts.Leaderboard {
 			log.Fatal(err)
 		}
 	}
+
+	lb.Position = GetLeaderboardPosition(u, playMode)
+	lb.UserID = uint32(u.ID)
 
 	return &lb
 }
