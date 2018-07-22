@@ -8,6 +8,7 @@ import (
 
 	"github.com/Gigamons/common/consts"
 	"github.com/Gigamons/common/helpers"
+	"github.com/Gigamons/common/logger"
 )
 
 // GetUserID Returns a UserID of the given UserName
@@ -75,14 +76,22 @@ func getUserStatus(userid int) consts.Status {
 		}
 	}
 
-	buntil := time.Now()
-	buntil.Format(banneduntil)
-
+	if banneduntil == "0000-00-00 00:00:00" || banneduntil == "" {
+		banneduntil = "0001-01-01 00:00:00"
+	}
+	if silenceduntil == "0000-00-00 00:00:00" || silenceduntil == "" {
+		silenceduntil = "0001-01-01 00:00:00"
+	}
+	buntil, err := time.Parse("2006-01-02 15:04:05", banneduntil)
+	if err != nil {
+		logger.Errorln(err)
+	}
 	u.BannedUntil = buntil
 
-	suntil := time.Now()
-	suntil.Format(silenceduntil)
-
+	suntil, err := time.Parse("2006-01-02 15:04:05", silenceduntil)
+	if err != nil {
+		logger.Errorln(err)
+	}
 	u.SilencedUntil = suntil
 
 	return u

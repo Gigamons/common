@@ -20,5 +20,5 @@ func ToPlaymodeString(p int8) string {
 	case Mania:
 		return "mania"
 	}
-	return "osu"
+	return "std"
 }

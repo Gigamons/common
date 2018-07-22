@@ -869,6 +869,6 @@ func ToCountryCode(CountryID uint8) string {
 	case 7:
 		return "AI"
 	default:
-		return "UNKNOWN"
+		return "XX"
 	}
 }
