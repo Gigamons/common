@@ -8,11 +8,11 @@ import (
 )
 
 // CalculateAccuracy calculates every playModes accuracy.
-func CalculateAccuracy(count300 int64, count100 int64, count50 int64, countMiss int64, countGeki int64, countKatu int64, playMode int8) float64 {
-	var thp int64
-	var th int64
-	if count300 == 0 {
-		count300 = 1
+func CalculateAccuracy(count300 uint64, count100 uint64, count50 uint64, countMiss uint64, countGeki uint64, countKatu uint64, playMode byte) float64 {
+	var thp uint64
+	var th uint64
+	if count300 == 0 && count100 == 0 && count50 == 0 && countMiss == 0 && countGeki == 0 && countKatu == 0 {
+		return 1
 	}
 	switch playMode {
 	case consts.STD:
@@ -36,7 +36,7 @@ func CalculateAccuracy(count300 int64, count100 int64, count50 int64, countMiss 
 	}
 }
 
-// ToHumanAcc is converting the Accuracy to a human readable Number, (Way smaller then E.G 0.895023981 // should be 89.50 % acc)
+// ToHumanAcc is converting the Accuracy to a human readable Number. (Way smaller then E.G 0.895023981 // should be 89.50 % acc)
 func ToHumanAcc(acc float64) float64 {
 	a := fmt.Sprintf("%.2f", acc*100)
 	r, err := strconv.ParseFloat(a, 64)

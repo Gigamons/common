@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	Count300  = int64(500)
-	Count100  = int64(421)
-	Count50   = int64(120)
-	CountMiss = int64(3)
-	CountGeki = int64(250)
-	CountKatu = int64(220)
+	Count300  = uint64(500)
+	Count100  = uint64(421)
+	Count50   = uint64(120)
+	CountMiss = uint64(3)
+	CountGeki = uint64(250)
+	CountKatu = uint64(220)
 )
 
 var (

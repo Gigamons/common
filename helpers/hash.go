@@ -6,19 +6,17 @@ import (
 )
 
 // MD5File reads a File and generates a md5 hash out of it.
-func MD5File(Path string) (out []byte, err error) {
+func MD5File(Path string) ([]byte, error) {
 	b, err := ioutil.ReadFile(Path)
 	if err != nil {
-		return
+		return nil, err
 	}
-	out, err = MD5(b)
-	return
+	return MD5(b)
 }
 
 // MD5String Converts a String to a MD5 Hash.
-func MD5String(String string) (out []byte, err error) {
-	out, err = MD5([]byte(String))
-	return
+func MD5String(String string) ([]byte, error) {
+	return MD5([]byte(String))
 }
 
 // MD5 Converts a []byte Array to a MD5 Hash.

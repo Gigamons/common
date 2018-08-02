@@ -3,7 +3,7 @@ package consts
 import "strings"
 
 // ToCountryID convert Country Code to CountryID
-func ToCountryID(CountryCode string) uint8 {
+func ToCountryID(CountryCode string) byte {
 	switch strings.ToUpper(CountryCode) {
 	case "AD":
 		return 3
@@ -438,7 +438,8 @@ func ToCountryID(CountryCode string) uint8 {
 	}
 }
 
-func ToCountryCode(CountryID uint8) string {
+// ToCountryCode converts an CountryID into String.
+func ToCountryCode(CountryID byte) string {
 	switch CountryID {
 	case 132:
 		return "LV"

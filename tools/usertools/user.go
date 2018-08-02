@@ -1,8 +1,6 @@
 package usertools
 
 import (
-	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -12,45 +10,49 @@ import (
 )
 
 // GetUserID Returns a UserID of the given UserName
-func GetUserID(username string) int {
+func GetUserID(username string) *uint32 {
+	var UserID uint32
 	db := helpers.DB
 	safe := strings.ToLower(strings.Replace(username, " ", "_", -1))
-	UserID := 0
 	err := db.Ping()
 	if err != nil {
-		fmt.Println("DB")
-		return -1
+		logger.Errorln(err)
+		return nil
 	}
 	rows, err := db.Query("SELECT id FROM users WHERE username_safe = ?", safe)
 	defer rows.Close()
 	if err != nil {
-		log.Fatal(err)
-		return -1
+		logger.Errorln(err)
+		return nil
 	}
 	for rows.Next() {
 		err := rows.Scan(&UserID)
 		if err != nil {
-			log.Fatal(err)
-			return -1
+			logger.Errorln(err)
+			return nil
 		}
 	}
-	return UserID
+	return &UserID
 }
 
 // GetUser returns a User based on the Defined UserID
-func GetUser(userid int) *consts.User {
+func GetUser(userid *uint32) *consts.User {
+	// To prevent some errors.
+	if userid == nil {
+		return nil
+	}
 	db := helpers.DB
 	u := consts.User{}
 
 	rows, err := db.Query("SELECT id, username, username_safe, email, password, privileges, achievements, achievements_displayed FROM users WHERE id = ?", userid)
 	defer rows.Close()
 	if err != nil {
-		log.Fatal(err)
+		logger.Errorln(err)
 	}
 	for rows.Next() {
 		err := rows.Scan(&u.ID, &u.UserName, &u.UserNameSafe, &u.EMail, &u.BCryptPassword, &u.Privileges, &u.Achievements, &u.AchievementsDisplayed)
 		if err != nil {
-			log.Fatal(err)
+			logger.Errorln(err)
 		}
 	}
 
@@ -59,21 +61,26 @@ func GetUser(userid int) *consts.User {
 	return &u
 }
 
-func getUserStatus(userid int) consts.Status {
-	db := helpers.DB
-	u := consts.Status{}
-	banneduntil := ""
-	silenceduntil := ""
-	rows, err := db.Query("SELECT country, lat, lon, banned, banned_until, banned_reason, silenced, silenced_until, silenced_reason, verified FROM users_status WHERE id = ?", userid)
-	if err != nil {
-		panic(err)
+func getUserStatus(userid *uint32) *consts.Status {
+	// To prevent some errors.
+	if userid == nil {
+		return nil
 	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&u.Country, &u.Lat, &u.Lon, &u.Banned, &banneduntil, &u.BannedReason, &u.Silenced, &silenceduntil, &u.SilencedReason, &u.Verified)
-		if err != nil {
-			log.Fatal(err)
-		}
+	var banneduntil string
+	var silenceduntil string
+	var u consts.Status
+
+	db := helpers.DB
+
+	row := db.QueryRow("SELECT country, lat, lon, banned, banned_until, banned_reason, silenced, silenced_until, silenced_reason, verified FROM users_status WHERE id = ?", userid)
+	if row == nil {
+		return nil
+	}
+
+	err := row.Scan(&u.Country, &u.Lat, &u.Lon, &u.Banned, &banneduntil, &u.BannedReason, &u.Silenced, &silenceduntil, &u.SilencedReason, &u.Verified)
+	if err != nil {
+		logger.Errorln(err)
+		return nil
 	}
 
 	if banneduntil == "0000-00-00 00:00:00" || banneduntil == "" {
@@ -82,111 +89,118 @@ func getUserStatus(userid int) consts.Status {
 	if silenceduntil == "0000-00-00 00:00:00" || silenceduntil == "" {
 		silenceduntil = "0001-01-01 00:00:00"
 	}
+
 	buntil, err := time.Parse("2006-01-02 15:04:05", banneduntil)
 	if err != nil {
 		logger.Errorln(err)
+		buntil = time.Now()
 	}
 	u.BannedUntil = buntil
 
 	suntil, err := time.Parse("2006-01-02 15:04:05", silenceduntil)
 	if err != nil {
 		logger.Errorln(err)
+		suntil = time.Now()
 	}
 	u.SilencedUntil = suntil
 
-	return u
+	return &u
 }
 
-func GetLeaderboard(u *consts.User, playMode int8) *consts.Leaderboard {
+// GetLeaderboard is getting the Leaderboard of the Database!
+func GetLeaderboard(u *consts.User, playMode byte) *consts.Leaderboard {
 	if u == nil {
 		return nil
 	}
-	var db = helpers.DB
+	var lb consts.Leaderboard
 	var m string
 	if u.Relax {
 		m = "_rx"
 	} else {
 		m = ""
 	}
-	var lb consts.Leaderboard
+
+	db := helpers.DB
 	pm := consts.ToPlaymodeString(playMode)
 	if pm != "" {
 		pm = "_" + pm
 	}
-	rows, err := db.Query("SELECT rankedscore"+pm+", totalscore"+pm+", count_300"+pm+", count_100"+pm+", count_50"+pm+", count_miss"+pm+", playcount"+pm+", pp"+pm+" FROM leaderboard"+m+" WHERE id = ?", u.ID)
-	defer rows.Close()
-	if err != nil {
-		log.Fatal(err)
+
+	row := db.QueryRow("SELECT rankedscore"+pm+", totalscore"+pm+", count_300"+pm+", count_100"+pm+", count_50"+pm+", count_miss"+pm+", playcount"+pm+", pp"+pm+" FROM leaderboard"+m+" WHERE id = ?", u.ID)
+	if row == nil {
+		return nil
 	}
-	for rows.Next() {
-		err := rows.Scan(&lb.RankedScore, &lb.TotalScore, &lb.Count300, &lb.Count100, &lb.Count50, &lb.CountMiss, &lb.Playcount, &lb.PeppyPoints)
-		if err != nil {
-			log.Fatal(err)
-		}
+	err := row.Scan(&lb.RankedScore, &lb.TotalScore, &lb.Count300, &lb.Count100, &lb.Count50, &lb.CountMiss, &lb.Playcount, &lb.PeppyPoints)
+	if err != nil {
+		logger.Errorln(err)
+		return nil
 	}
 
 	lb.Position = GetLeaderboardPosition(u, playMode)
-	lb.UserID = uint32(u.ID)
+	lb.UserID = u.ID
 
 	return &lb
 }
 
-func GetLeaderboardPosition(u *consts.User, playMode int8) int32 {
+// GetLeaderboardPosition is used to get the leaderboard position.
+func GetLeaderboardPosition(u *consts.User, playMode byte) uint32 {
 	if u == nil {
-		return -1
+		return 0
 	}
-	var userids []int
-	db := helpers.DB
+
+	var Pos uint32
 	var m string
 	if u.Relax {
 		m = "_rx"
 	} else {
 		m = ""
 	}
+
+	db := helpers.DB
 	pm := consts.ToPlaymodeString(playMode)
 	if pm != "" {
 		pm = "_" + pm
 	}
+
 	rows, err := db.Query("SELECT id FROM leaderboard" + m + " ORDER BY pp" + pm + " DESC, rankedscore" + pm + " DESC")
 	if err != nil {
 		panic(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var useridstr int
-		err := rows.Scan(&useridstr)
-		userids = append(userids, useridstr)
+		var userid uint32
+		err := rows.Scan(&userid)
 		if err != nil {
-			log.Fatal(err)
+			logger.Errorln(err)
 		}
-	}
-
-	for i := 0; i < len(userids); i++ {
-		if int32(userids[i]) == u.ID {
-			return int32(i + 1)
+		if userid == u.ID {
+			return Pos + 1
 		}
+		Pos++
 	}
 
 	return 0
 }
 
-func GetFriends(u *consts.User) []int32 {
-	var userids []int32
+// GetFriends return a array of friend userids!
+func GetFriends(u *consts.User) []uint32 {
+	var userids []uint32
 	db := helpers.DB
 
 	rows, err := db.Query("SELECT friendid FROM friends WHERE userid = ?", u.ID)
 	if err != nil {
-		panic(err)
+		logger.Debugln(err)
+		return nil
 	}
 
 	defer rows.Close()
 	for rows.Next() {
-		var useridstr int32
+		var useridstr uint32
 		err := rows.Scan(&useridstr)
-		userids = append(userids, useridstr)
 		if err != nil {
-			log.Fatal(err)
+			logger.Errorln(err)
 		}
+		userids = append(userids, useridstr)
 	}
 
 	return userids
